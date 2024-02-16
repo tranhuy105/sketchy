@@ -28,8 +28,10 @@ import { UpdateImage } from "@/actions/updateImage";
 
 export const AddImageButton = ({
   boardId,
+  mini,
 }: {
   boardId: string | undefined;
+  mini?: boolean;
 }) => {
   const router = useRouter();
 
@@ -55,7 +57,7 @@ export const AddImageButton = ({
 
     setIsLoading(true);
     // console.log(currentSelect);
-    console.log(boardId, currentSelect);
+    // console.log(boardId, currentSelect);
     await UpdateImage(boardId, currentSelect);
     setIsLoading(false);
     router.refresh();
@@ -65,7 +67,11 @@ export const AddImageButton = ({
   return (
     <>
       <div
-        className="absolute -top-4 right-[50%] ml-24 hover:bg-muted-foreground/10 m-2 w-12 h-12 bg-transparent  rounded-md opacity-30  hover:opacity-100 transition-all duration-500 flex items-center justify-center cursor-pointer hover:scale-105 text-muted-foreground z-20"
+        className={cn(
+          "absolute -top-4 right-[50%] ml-24 hover:bg-muted-foreground/10 m-2 w-12 h-12 bg-transparent  rounded-md opacity-30  hover:opacity-100 transition-all duration-500 flex items-center justify-center cursor-pointer hover:scale-105 text-muted-foreground z-20",
+          mini &&
+            "opacity-0 hover:opacity-0 top-0 left-0 bottom-0 right-0"
+        )}
         onClick={showMenu}
       >
         <ImagePlus className="h-8 w-8" />
@@ -73,15 +79,28 @@ export const AddImageButton = ({
         {/* IMAGE PICK MENU */}
       </div>
       {show && (
-        <div className="fixed w-full h-full -top-8 left-0 right-0 bottom-0 bg-black/60 z-[9999] flex items-center justify-center">
+        <div
+          className={cn(
+            "fixed w-full h-full -top-8 left-0 right-0 bottom-0 bg-black/60 z-[9999] flex items-center justify-center",
+            mini && "top-8"
+          )}
+        >
           <div
-            className="bg-zinc-100 shadow-md shadow-black w-[80%] min-h-[640px] px-8 py-6 text-center space-y-6"
+            className={cn(
+              "bg-slate-50 shadow-md shadow-black w-[80%] min-h-[640px] px-8 py-6 text-center space-y-6",
+              mini && "pb-20 h-[520px] text-primary/80"
+            )}
             ref={divRef}
           >
             <h1 className="font-bold text-2xl text-start">
               Select your image
             </h1>
-            <div className="h-[540px] overflow-y-auto px-5 py-3 border">
+            <div
+              className={cn(
+                "h-[540px] overflow-y-auto px-5 py-3 border",
+                mini && "h-[480px]"
+              )}
+            >
               <div className="columns-3 gap-4 space-y-5 [&>img:not(:first-child)]:mt-8 border break-inside-avoid">
                 {backgrounds.map((bg, index) => (
                   <div

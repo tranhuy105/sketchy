@@ -12,6 +12,7 @@ datasource db {
 enum BoardType {
   NOTE
   SKETCH
+  BOT
 }
 
 model Board {

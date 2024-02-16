@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
 import { BoardType } from "@prisma/client";
-import { Notebook, Pencil, Plus } from "lucide-react";
+import { Bot, Notebook, Pencil, Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -25,16 +25,24 @@ export const NewButton = ({
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
-  const handleSetMode = (s: "NOTE" | "SKETCH") => {
+  const handleSetMode = (s: "NOTE" | "SKETCH" | "BOT") => {
     if (s === "NOTE" && mode !== "NOTE") {
       setMode(s);
     }
     if (s === "SKETCH" && mode !== "SKETCH") {
       setMode(s);
     }
+    if (s === "BOT" && mode !== "BOT") {
+      setMode(s);
+    }
   };
 
   const handleCreateBoard = async () => {
+    if (mode === "BOT") {
+      router.push(`/bot/new`);
+      return;
+    }
+
     setIsLoading(true);
     const newBoard = await saveOrCreateNewBoard(
       "Your Title",
@@ -71,7 +79,7 @@ export const NewButton = ({
       </DialogTrigger>
       <DialogContent className="w-[320px] py-6 pr-9">
         {/* <div className="relative h-[320px] w-full"> */}
-        <div className="flex bg-white z-50  w-full items-center justify-center gap-12 px-12 py-3    ">
+        <div className="flex bg-white z-50  w-full items-center justify-center px-12 py-3    ">
           <div
             className={cn(
               "p-3 rounded-full cursor-pointer hover:bg-secondary transition",
@@ -89,6 +97,15 @@ export const NewButton = ({
             onClick={() => handleSetMode("SKETCH")}
           >
             <Pencil />
+          </div>
+          <div
+            className={cn(
+              "p-3 rounded-full cursor-pointer hover:bg-secondary transition",
+              mode === "BOT" && "bg-secondary"
+            )}
+            onClick={() => handleSetMode("BOT")}
+          >
+            <Bot />
           </div>
         </div>
         <DialogClose asChild className="focus:outline-none">

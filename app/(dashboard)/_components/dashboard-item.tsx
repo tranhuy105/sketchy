@@ -5,7 +5,7 @@ import { Board } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
 import { formatDistanceToNow } from "date-fns";
-import { Notebook, Pencil } from "lucide-react";
+import { Bot, Notebook, Pencil } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface BoardProps {
@@ -21,7 +21,13 @@ export const DashboardItem = ({ board }: BoardProps) => {
   );
 
   return (
-    <Link href={`/edit/${board.id}`}>
+    <Link
+      href={
+        board.type === "BOT"
+          ? `bot/${board.id}`
+          : `/edit/${board.id}`
+      }
+    >
       <div className="group aspect-[100/127] rounded-lg border flex flex-col justify-between overflow-hidden">
         <div className="relative flex-1 bg-amber-50">
           <Image
@@ -44,10 +50,14 @@ export const DashboardItem = ({ board }: BoardProps) => {
               "absolute top-1 right-2 text-muted-foreground p-2 hover:bg-primary-foreground transition-colors rounded-full"
             )}
           >
-            {board.type === "NOTE" ? (
+            {board.type === "NOTE" && (
               <Notebook className="h-4 w-4" />
-            ) : (
+            )}
+            {board.type === "SKETCH" && (
               <Pencil className="h-4 w-4" />
+            )}
+            {board.type === "BOT" && (
+              <Bot className="h-4 w-4" />
             )}
           </div>
         </div>

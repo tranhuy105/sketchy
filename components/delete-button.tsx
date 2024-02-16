@@ -54,7 +54,7 @@ export const DeleteButton = ({
       <DialogTrigger asChild>
         <Button
           variant="destructive"
-          className="w-full opacity-50 hover:opacity-100 hover:cursor-not-allowed transition-opacity duration-500"
+          className="w-full opacity-50 hover:opacity-100 hover:cursor-pointer transition-opacity duration-500"
         >
           Delete
         </Button>

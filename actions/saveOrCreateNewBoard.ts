@@ -17,7 +17,7 @@ const images = [
 
 export const saveOrCreateNewBoard = async (
   title: string,
-  type: "NOTE" | "SKETCH",
+  type: "NOTE" | "SKETCH" | "BOT",
   content: string,
   id?: string
 ) => {

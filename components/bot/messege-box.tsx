@@ -1,3 +1,5 @@
+"use client";
+
 import { useEffect, useRef, useState } from "react";
 import { CSVDataItem } from "./bot-upload";
 import { Message } from "./message";
@@ -11,7 +13,7 @@ import {
 import { Input } from "../ui/input";
 
 interface MessageProps {
-  data: CSVDataItem[];
+  content: CSVDataItem[];
 }
 
 type MessageType = {
@@ -21,20 +23,31 @@ type MessageType = {
 };
 type MessagesType = MessageType[];
 
-const randomItem = (x: CSVDataItem[]) =>
-  x.splice((Math.random() * x.length) | 0, 1);
+function shuffleArray(array: CSVDataItem[]) {
+  const newArray = [...array];
 
-export const MessageBox = ({ data }: MessageProps) => {
-  const [d, setData] = useState(data);
+  for (let i = newArray.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+  }
+
+  return newArray;
+}
+
+export const MessageBox = ({ content }: MessageProps) => {
+  // console.log(content);
+  const [d, setD] = useState<CSVDataItem[]>(
+    shuffleArray(content.slice(1))
+  );
   const [messages, setMessages] = useState<MessagesType>([
     {
-      mess: `Type "~" in your keyboard to start and pause a session`,
+      mess: `Welcome, just a quick guide: you can type "p" in your keyboard to start and pause a session, "reset" to reset your session and "clear" to clean your box, when doing reset or clear, the game with automatically be paused. And now to start plating, please type "p"`,
       by: "BOT",
       img: "",
     },
   ]);
   const [currentQuestion, setCurrentQuestion] =
-    useState<CSVDataItem>(data[0]);
+    useState<CSVDataItem>(content[0]);
   const [ready, setIsReady] = useState(false);
 
   const divRef = useRef<HTMLDivElement>(null);
@@ -66,50 +79,49 @@ export const MessageBox = ({ data }: MessageProps) => {
   };
 
   // ADDING QUESTION LOGIC
-  const addQuestion = (playerInput: string) => {
+  const botRes = (playerInput: string) => {
     if (!d[0]) {
       addMessege(
-        "You have finised this deck, type x to reset and play again",
+        `You have finised this deck, type "reset" to reset and play again`,
         "BOT",
         ""
       );
       return;
     }
 
-    const nextQuestion = randomItem(d)[0];
-
+    // neu tra loi dung
     if (playerInput === currentQuestion[2]) {
-      console.log("correct");
-      console.log(nextQuestion);
+      addMessege("Correct", "BOT", "");
+      if (currentQuestion === content[0]) {
+        setCurrentQuestion(d[0]);
+        addMessege(d[0][0], "BOT", "");
+      } else {
+        if (d[1]) {
+          setD((curArr) => curArr.slice(1));
+          setCurrentQuestion((cur) => d[1]);
+          addMessege(d[1][0], "BOT", "");
+        } else {
+          setD([]);
+          setCurrentQuestion(["", "", ""]);
+          addMessege(
+            `You have finised this deck, type "reset" to reset and play again`,
+            "BOT",
+            ""
+          );
+        }
+      }
     } else {
-      // setData((cur)=>[...cur, currentQuestion]);
-      console.log(playerInput, currentQuestion[2]);
-      console.log("wrong");
+      if (currentQuestion !== content[0]) {
+        setD((cur) => [...cur, currentQuestion]);
+      }
+      addMessege("Incorrect", "BOT", "");
+      addMessege(
+        `The correct answer is "${currentQuestion[2]}"`,
+        "BOT",
+        ""
+      );
     }
   };
-
-  // PAUSING LOGIC
-  useEffect(() => {
-    const handlePause = (e: KeyboardEvent) => {
-      if (e.key === "~") {
-        console.log("pause");
-        setIsReady((cur) => !cur);
-      }
-    };
-
-    window.addEventListener("keydown", handlePause);
-
-    return () => {
-      window.removeEventListener("keydown", handlePause);
-    };
-  });
-
-  useEffect(() => {
-    if (ready) {
-      addMessege(currentQuestion[0], "BOT", "");
-      // addQuestion("");
-    }
-  }, [ready]);
 
   // const stringData = JSON.stringify(data);
   // const objectData = JSON.parse(stringData);
@@ -125,23 +137,52 @@ export const MessageBox = ({ data }: MessageProps) => {
   const onSubmit: SubmitHandler<FieldValues> = (
     message
   ) => {
-    const { data } = message;
-    addMessege(data, "USER", "");
+    const { data: playerInput } = message;
+    addMessege(playerInput, "USER", "");
     resetField("data");
+    if (playerInput.toLowerCase() === "reset") {
+      setD(shuffleArray(content.slice(1)));
+      setCurrentQuestion(content[0]);
+      setIsReady(false);
+      addMessege("reset succesfully", "BOT", "");
+      return;
+    }
+
+    if (playerInput.toLowerCase() === "clear") {
+      setMessages([]);
+      setIsReady(false);
+      return;
+    }
+
+    if (!ready && playerInput === "p") {
+      addMessege(currentQuestion[0], "BOT", "");
+      setIsReady(true);
+      return;
+    }
+
     if (!ready) {
       addMessege(
-        "Please type ~ in your keyboard to get ready",
+        `In pause mode, type "p" to continue`,
         "BOT",
         ""
       );
       return;
     }
-    addQuestion(data);
+
+    if (ready && playerInput === "p") {
+      addMessege("pause", "BOT", "");
+      setIsReady(false);
+      return;
+    }
+
+    if (ready) {
+      botRes(playerInput);
+    }
   };
 
   return (
-    <div className="h-full bg-transparent pl-64">
-      <div className="w-full text-secondary pr-24 pl-12 overflow-y-auto h-[calc(100%-64px)]">
+    <div className="h-full bg-transparent pl-80">
+      <div className="w-full text-secondary pr-16 pl-8 pt-6 overflow-y-auto h-[calc(100%-64px)] pb-8">
         {messages.map(
           (mess: MessageType, index: number) => (
             <Message
@@ -164,10 +205,10 @@ export const MessageBox = ({ data }: MessageProps) => {
       >
         <Input
           type="text"
-          id="data"
+          id="playerInput"
           placeholder="Soạn tin nhắn của bạn"
           className={cn(
-            ` focus:border-0 focus:outline-none h-full text-base px-4 py-3 rounded-l-lg text-gray-400 w-full placeholder:text-muted-foreground/20`
+            ` focus:border-0 focus:outline-none border-none h-full text-base px-4 py-3 text-gray-400 w-full placeholder:text-muted-foreground/20`
           )}
           {...register("data", { required: true })}
           // disabled={isTyping}
@@ -175,9 +216,9 @@ export const MessageBox = ({ data }: MessageProps) => {
         />
         <Button
           type="submit"
-          variant="default"
+          variant="outline"
           className={cn(
-            " h-full text-base font-bold bg-sky-500 hover:bg-sky-600 rounded-r-xl rounded-l-none"
+            " h-full text-base font-bold border-none  opacity-60"
           )}
         >
           Gửi

@@ -1,27 +1,24 @@
 "use client";
 
+import { Board } from "@prisma/client";
 import { MessageBox } from "./messege-box";
 import { Sidebar } from "./sidebar";
 
-const test = [
-  ["cau 1", "img", "1"],
-
-  ["cau 2", "", "2"],
-
-  ["cau 3", "url", "3"],
-
-  ["cau 4", "url", "4"],
-];
-
 interface BotFormProps {
-  id?: string;
+  board: Board;
+  allBotBoards: Board[];
 }
 
-export const BotForm = ({ id }: BotFormProps) => {
+export const BotForm = ({
+  board,
+  allBotBoards,
+}: BotFormProps) => {
   return (
     <div className=" h-[calc(100vh-64px)] bg-transparent relative w-full">
-      <Sidebar />
-      {id && <MessageBox data={test}></MessageBox>}
+      <Sidebar allBotBoards={allBotBoards} board={board} />
+      {board && (
+        <MessageBox content={JSON.parse(board.content)} />
+      )}
     </div>
   );
 };
