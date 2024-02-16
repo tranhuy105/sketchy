@@ -1,8 +1,6 @@
 import { NewButton } from "@/app/(dashboard)/_components/new-button";
 import { SearchInput } from "@/app/(dashboard)/_components/search-input";
-import { Book } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
 import { Logo } from "./logo";
 
 export const Navbar = () => {
