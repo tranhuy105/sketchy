@@ -1,0 +1,25 @@
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
+}
+
+datasource db {
+  provider  = "postgresql"
+  url  	    = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum BoardType {
+  NOTE
+  SKETCH
+}
+
+model Board {
+  id String @id @default(cuid())
+  img String?
+  updatedAt DateTime @updatedAt
+  type BoardType
+  title String
+  content String
+}
+
