@@ -4,12 +4,8 @@ import Image from "next/image";
 interface MessageProps {
   mess: string;
   by: "USER" | "BOT";
-  img?: string;
+  img: string;
 }
-
-const questionIndex = 0;
-const imgIndex = 1;
-const answerIndex = 2;
 
 export const Message = ({
   mess,
@@ -19,13 +15,14 @@ export const Message = ({
   if (mess === "") return;
 
   const container = cn(
-    "flex gap-3 p-4 py-3 max-w-[80%]",
+    "flex gap-3 p-4 py-3 max-w-[80%] ",
     by === "USER" && "justify-end ml-auto"
   );
 
   const body = cn(
     "flex flex-col gap-1 pt-1",
-    by === "USER" && "items-end"
+    by === "USER" && "items-end",
+    img === "skip" && "-mt-4"
   );
 
   const content = cn(
@@ -33,51 +30,75 @@ export const Message = ({
     by === "USER"
       ? "bg-blue-500"
       : "bg-zinc-800 text-secondary",
-    img !== undefined
-      ? "w-[calc(100vw*1/2)] xl:w-[calc(100vw*1/4)] h-[calc(100vh*1/3)] relative rounded-lg"
+    img !== "" && img !== "skip"
+      ? "w-[calc(100vw*1/2)] xl:w-[calc(100vw*1/4)]  relative rounded-lg p-0 border shadow-md"
       : ""
   );
 
   return (
     <div className={container}>
       <div
-        className={cn("flex items-end", {
-          "order-2": by === "USER",
-        })}
+        className={cn(
+          "flex items-end bg-red-0 text-transparent",
+          {
+            "order-2": by === "USER",
+          },
+          img !== "skip" && img !== "" && "items-start pt-7"
+        )}
       >
-        <div className="w-8 h-8 md:w-12 md:h-12 relative">
-          <Image
-            src={
-              by === "USER" ? "/logo.webp" : `/logo.webp`
-            }
-            alt=""
-            fill
-            className="object-cover rounded-full cursor-pointer"
-          />
-        </div>
-      </div>
-      <div className={body}>
+        (
         <div
           className={cn(
-            "flex items-center gap-1 text-xs text-muted-foreground/50 font-semibold",
-            {
-              "mr-2": by === "USER",
-              "ml-2": by === "BOT",
-            }
+            "w-8 h-8 md:w-12 md:h-12 relative "
           )}
         >
-          {by === "USER" ? "YOU" : "BOT"}
+          {img === "" && (
+            <Image
+              src={
+                by === "USER" ? "/logo.webp" : `/bot.svg`
+              }
+              alt=""
+              fill
+              className="object-cover rounded-full cursor-pointer"
+            />
+          )}
+          {img !== "skip" && img !== "" && (
+            <Image
+              src={
+                by === "USER" ? "/logo.webp" : `/bot.svg`
+              }
+              alt=""
+              fill
+              className="object-cover rounded-full cursor-pointer"
+            />
+          )}
         </div>
+        )
+      </div>
+      <div className={body}>
+        {img !== "skip" && (
+          <div
+            className={cn(
+              "flex items-center gap-1 text-xs text-muted-foreground/50 font-semibold",
+              {
+                "mr-2": by === "USER",
+                "ml-2": by === "BOT",
+              }
+            )}
+          >
+            {by === "USER" ? "You" : "Kotobo"}
+          </div>
+        )}
 
         <div className={content}>
-          {img !== undefined ? (
-            <Image
+          {img !== "" && img !== "skip" ? (
+            <img
               src={img}
-              alt="akitofunly"
-              fill
-              className="object-cover"
+              alt={""}
+              className="object-fit"
             />
           ) : (
+            // mess
             mess
           )}
         </div>

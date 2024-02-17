@@ -6,10 +6,12 @@ import { useState, ChangeEvent } from "react";
 import { Upload } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { saveOrCreateNewBoard } from "@/actions/saveOrCreateNewBoard";
+import { Button } from "../ui/button";
 
 export type CSVDataItem = string[];
 export const Bot = () => {
   const router = useRouter();
+  const [error, setError] = useState(false);
 
   function isValidData(data: any): data is string[][] {
     return (
@@ -20,11 +22,19 @@ export const Bot = () => {
           arr.length === 3 &&
           typeof arr[0] === "string" &&
           arr[0] !== "" &&
+          typeof arr[1] === "string" &&
+          isUrl(arr[1]) &&
           typeof arr[2] === "string" &&
           arr[2] !== ""
       )
     );
   }
+
+  const isUrl = (value: string) => {
+    const urlRegex = /^(ftp|http|https):\/\/[^ "]+$/;
+
+    return urlRegex.test(value) || value === "";
+  };
 
   const handleUpload = (
     e: ChangeEvent<HTMLInputElement>
@@ -37,17 +47,21 @@ export const Bot = () => {
         complete: async (res) => {
           const trimmedData = res.data.slice(0, -1);
 
-          if (isValidData(trimmedData)) {
-            // console.log(trimmedData);
-            const board = await saveOrCreateNewBoard(
-              "My bot",
-              "BOT",
-              JSON.stringify(trimmedData)
-            );
-            router.push(`/bot/${board.id}`);
-          } else {
-            console.error(trimmedData, "INVALID TYPE");
-            return null;
+          try {
+            if (isValidData(trimmedData)) {
+              const board = await saveOrCreateNewBoard(
+                "My bot",
+                "BOT",
+                JSON.stringify(trimmedData)
+              );
+              router.push(`/bot/${board.id}`);
+            } else {
+              console.error(trimmedData, "INVALID TYPE");
+              throw new Error("Invalid Type");
+            }
+          } catch (error) {
+            setError(true);
+            console.error("Error uploading file:", error);
           }
         },
       });
@@ -56,7 +70,7 @@ export const Bot = () => {
 
   return (
     <>
-      <div className="w-full py-16 ">
+      <div className="w-full py-16 bg-slate-50">
         <h1 className="text-center text-6xl font-bold my-16 w-[70%] mx-auto leading-snug tracking-tight">
           Learn faster by &quot;
           <span className="text-sky-600  italic font-extrabold">
@@ -76,15 +90,13 @@ export const Bot = () => {
             className="object-cover"
           />
         </div>
-        <p className=" w-[640px] mx-auto text-center text-muted-foreground font-semibold intro italic text-base mb-32">
+        <p className=" w-[640px] mx-auto text-center text-muted-foreground font-semibold intro italic text-base mb-32 tracking-tight">
           Combining learning with continuous practice will
           help knowledge quickly be imprinted in the brain.
           And we&apos;re here to help you do that. Just{" "}
           <span className="text-sky-400">a few steps</span>{" "}
           to get started! anywhere! anytime!
         </p>
-
-        <div className=" border w-full" />
 
         <div className="w-full grid grid-cols-2 items-center mt-28 intro">
           <div className="w-[800px] mx-auto mb-8 mt-16 h-[500px] relative intro ">
@@ -99,11 +111,11 @@ export const Bot = () => {
             <h2 className="font-extrabold  text-5xl truncate">
               Hey There!
             </h2>
-            <p>
+            <p className="tracking-tighter">
               Before uploading your .csv, be sure to get
               your .csv to be in the right format as show
               here!. <br />
-              <span className="text-muted-foreground/50 font-extrabold text-sm mt-4  block">
+              <span className="text-muted-foreground/50 font-light text-sm mt-4  block">
                 This is crucial for our bot to work and
                 function correctly
               </span>
@@ -123,6 +135,28 @@ export const Bot = () => {
             onChange={handleUpload}
           />
         </div>
+        {error && (
+          <div className="w-fit mx-auto px-4 py-3 bg-red-500 text-slate-100 font-semibold rounded-xl drop-shadow-lg intro flex items-center gap-5 text-sm -mt-6">
+            <p>
+              Invalid Type Error <br />
+              Please make sure your csv has{" "}
+              <span className="font-bold text-white underline decoration-sky-500 underline-offset-2">
+                at least 3 column of question, image, answer
+              </span>{" "}
+              <br /> Also{" "}
+              <span className="font-bold text-white underline decoration-sky-500 underline-offset-2">
+                images must be a valid URL
+              </span>
+            </p>
+            <Button
+              variant={"destructive"}
+              onClick={() => setError(false)}
+              className="hover:bg-red-600 transition-colors"
+            >
+              Ok
+            </Button>
+          </div>
+        )}
       </div>
     </>
   );

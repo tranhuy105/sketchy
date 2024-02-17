@@ -8,7 +8,7 @@ export const SidebarItem = ({
   board,
 }: {
   b: Board;
-  board: Board;
+  board?: Board;
 }) => {
   return (
     <Link
@@ -16,7 +16,7 @@ export const SidebarItem = ({
       key={b.id}
       className={cn(
         "text-primary/70  mr-2 px-3 py-2 rounded-lg flex items-center justify-start h-16 gap-3 cursor-pointer",
-        b.id === board.id && "bg-slate-100"
+        b.id === board?.id && "bg-slate-100"
       )}
     >
       <div className="w-10 h-10 border relative bg-slate-50 rounded-full">

@@ -5,7 +5,7 @@ import { MessageBox } from "./messege-box";
 import { Sidebar } from "./sidebar";
 
 interface BotFormProps {
-  board: Board;
+  board?: Board;
   allBotBoards: Board[];
 }
 

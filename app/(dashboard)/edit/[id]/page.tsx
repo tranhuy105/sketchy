@@ -1,4 +1,5 @@
 import { getBoardFromId } from "@/actions/getBoardFromId";
+import { BotCsvEditor } from "@/components/bot/bot-csv-editor";
 import { FormComponents } from "@/components/form";
 import { FormCanvasComponents } from "@/components/form-canvas";
 
@@ -34,7 +35,7 @@ export default async function page({
         />
       </div>
     );
-  } else {
+  } else if (board.type === "SKETCH") {
     return (
       <div className="flex items-center justify-center">
         <FormCanvasComponents
@@ -44,5 +45,13 @@ export default async function page({
         />
       </div>
     );
+  } else if (board.type === "BOT") {
+    return <div className="flex items-center justify-center h-[calc(100vh-64px)]">
+      <BotCsvEditor boardId={board.id}
+          title={board.title}
+          content={board.content}
+           image={board.img}
+          />
+    </div>
   }
 }

@@ -35,13 +35,12 @@ function shuffleArray(array: CSVDataItem[]) {
 }
 
 export const MessageBox = ({ content }: MessageProps) => {
-  // console.log(content);
   const [d, setD] = useState<CSVDataItem[]>(
     shuffleArray(content.slice(1))
   );
   const [messages, setMessages] = useState<MessagesType>([
     {
-      mess: `Welcome, just a quick guide: you can type "p" in your keyboard to start and pause a session, "reset" to reset your session and "clear" to clean your box, when doing reset or clear, the game with automatically be paused. And now to start plating, please type "p"`,
+      mess: `Welcome, Here's a quick guide! You can type "p" in your keyboard to start and pause a session, "reset" to reset your session and "clear" to clean your box. When doing reset or clear, the game with automatically be paused. And now to start playing, please type "p"`,
       by: "BOT",
       img: "",
     },
@@ -53,35 +52,70 @@ export const MessageBox = ({ content }: MessageProps) => {
   const divRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     if (messages.length) {
-      divRef.current?.scrollIntoView({
-        behavior: "smooth",
-        block: "end",
-      });
+      setTimeout(() => {
+        divRef.current?.scrollIntoView({
+          behavior: "smooth",
+          block: "end",
+        });
+      }, 100);
     }
   }, [messages.length]);
 
   // console.log(data);
 
   // ADD MESSAGE LOGIC
-  const addMessege = (
+  const addMessege = async (
     data: string,
     by: "BOT" | "USER",
     img: string
   ) => {
-    setMessages((cur: MessagesType) => [
-      ...cur,
-      {
-        mess: data,
-        by,
-        img,
-      },
-    ]);
+    if (by === "USER") {
+      setMessages((cur: MessagesType) => [
+        ...cur,
+        {
+          mess: data,
+          by,
+          img,
+        },
+      ]);
+    } else {
+      if (img === "") {
+        await setTimeout(() => {
+          setMessages((cur: MessagesType) => [
+            ...cur,
+            {
+              mess: data,
+              by,
+              img,
+            },
+          ]);
+        }, 500);
+      }
+
+      if (img !== "") {
+        await setTimeout(() => {
+          setMessages((cur: MessagesType) => [
+            ...cur,
+            {
+              mess: data,
+              by,
+              img,
+            },
+            {
+              mess: data,
+              by,
+              img: "skip",
+            },
+          ]);
+        }, 500);
+      }
+    }
   };
 
   // ADDING QUESTION LOGIC
-  const botRes = (playerInput: string) => {
+  const botRes = async (playerInput: string) => {
     if (!d[0]) {
-      addMessege(
+      await addMessege(
         `You have finised this deck, type "reset" to reset and play again`,
         "BOT",
         ""
@@ -91,19 +125,19 @@ export const MessageBox = ({ content }: MessageProps) => {
 
     // neu tra loi dung
     if (playerInput === currentQuestion[2]) {
-      addMessege("Correct", "BOT", "");
+      await addMessege("Correct", "BOT", "");
       if (currentQuestion === content[0]) {
         setCurrentQuestion(d[0]);
-        addMessege(d[0][0], "BOT", "");
+        await addMessege(d[0][0], "BOT", d[0][1]);
       } else {
         if (d[1]) {
           setD((curArr) => curArr.slice(1));
           setCurrentQuestion((cur) => d[1]);
-          addMessege(d[1][0], "BOT", "");
+          await addMessege(d[1][0], "BOT", d[1][1]);
         } else {
           setD([]);
           setCurrentQuestion(["", "", ""]);
-          addMessege(
+          await addMessege(
             `You have finised this deck, type "reset" to reset and play again`,
             "BOT",
             ""
@@ -114,8 +148,8 @@ export const MessageBox = ({ content }: MessageProps) => {
       if (currentQuestion !== content[0]) {
         setD((cur) => [...cur, currentQuestion]);
       }
-      addMessege("Incorrect", "BOT", "");
-      addMessege(
+      await addMessege("Incorrect", "BOT", "");
+      await addMessege(
         `The correct answer is "${currentQuestion[2]}"`,
         "BOT",
         ""
@@ -134,17 +168,17 @@ export const MessageBox = ({ content }: MessageProps) => {
     });
 
   // WHEN PLAYER INPUT, THE LOGIC
-  const onSubmit: SubmitHandler<FieldValues> = (
+  const onSubmit: SubmitHandler<FieldValues> = async (
     message
   ) => {
     const { data: playerInput } = message;
-    addMessege(playerInput, "USER", "");
+    await addMessege(playerInput, "USER", "");
     resetField("data");
     if (playerInput.toLowerCase() === "reset") {
       setD(shuffleArray(content.slice(1)));
       setCurrentQuestion(content[0]);
       setIsReady(false);
-      addMessege("reset succesfully", "BOT", "");
+      await addMessege("reset succesfully", "BOT", "");
       return;
     }
 
@@ -155,13 +189,17 @@ export const MessageBox = ({ content }: MessageProps) => {
     }
 
     if (!ready && playerInput === "p") {
-      addMessege(currentQuestion[0], "BOT", "");
+      await addMessege(
+        currentQuestion[0],
+        "BOT",
+        currentQuestion[1]
+      );
       setIsReady(true);
       return;
     }
 
     if (!ready) {
-      addMessege(
+      await addMessege(
         `In pause mode, type "p" to continue`,
         "BOT",
         ""
@@ -170,18 +208,18 @@ export const MessageBox = ({ content }: MessageProps) => {
     }
 
     if (ready && playerInput === "p") {
-      addMessege("pause", "BOT", "");
+      await addMessege("pause", "BOT", "");
       setIsReady(false);
       return;
     }
 
     if (ready) {
-      botRes(playerInput);
+      await botRes(playerInput);
     }
   };
 
   return (
-    <div className="h-full bg-transparent pl-80">
+    <div className="h-full bg-slate-50 pl-80">
       <div className="w-full text-secondary pr-16 pl-8 pt-6 overflow-y-auto h-[calc(100%-64px)] pb-8">
         {messages.map(
           (mess: MessageType, index: number) => (
@@ -189,6 +227,7 @@ export const MessageBox = ({ content }: MessageProps) => {
               key={index}
               mess={mess.mess}
               by={mess.by}
+              img={mess.img}
             />
           )
         )}
@@ -199,7 +238,9 @@ export const MessageBox = ({ content }: MessageProps) => {
         <div className="w-0 h-0" aria-hidden ref={divRef} />
       </div>
       <form
-        className="flex items-center justify-center text-xl w-full md:h-16"
+        className={cn(
+          "flex items-center justify-center text-xl w-full md:h-16"
+        )}
         onSubmit={handleSubmit(onSubmit)}
         autoComplete="off"
       >
@@ -211,7 +252,6 @@ export const MessageBox = ({ content }: MessageProps) => {
             ` focus:border-0 focus:outline-none border-none h-full text-base px-4 py-3 text-gray-400 w-full placeholder:text-muted-foreground/20`
           )}
           {...register("data", { required: true })}
-          // disabled={isTyping}
           autoFocus
         />
         <Button

@@ -56,8 +56,6 @@ export const AddImageButton = ({
       return;
 
     setIsLoading(true);
-    // console.log(currentSelect);
-    // console.log(boardId, currentSelect);
     await UpdateImage(boardId, currentSelect);
     setIsLoading(false);
     router.refresh();
@@ -68,9 +66,9 @@ export const AddImageButton = ({
     <>
       <div
         className={cn(
-          "absolute -top-4 right-[50%] ml-24 hover:bg-muted-foreground/10 m-2 w-12 h-12 bg-transparent  rounded-md opacity-30  hover:opacity-100 transition-all duration-500 flex items-center justify-center cursor-pointer hover:scale-105 text-muted-foreground z-20",
+          " -top-4 right-[50%] ml-24  m-2 w-12 h-12 bg-transparent rounded-md opacity-30  hover:opacity-100 transition-all duration-500 flex items-center justify-center cursor-pointer hover:scale-105 text-muted-foreground z-[9999] absolute",
           mini &&
-            "opacity-0 hover:opacity-0 top-0 left-0 bottom-0 right-0"
+            "opacity-0 hover:opacity-0 left-0 bottom-0 right-0 "
         )}
         onClick={showMenu}
       >
@@ -78,17 +76,19 @@ export const AddImageButton = ({
 
         {/* IMAGE PICK MENU */}
       </div>
+
       {show && (
         <div
           className={cn(
             "fixed w-full h-full -top-8 left-0 right-0 bottom-0 bg-black/60 z-[9999] flex items-center justify-center",
-            mini && "top-8"
+            mini && "top-8 "
           )}
         >
           <div
             className={cn(
               "bg-slate-50 shadow-md shadow-black w-[80%] min-h-[640px] px-8 py-6 text-center space-y-6",
-              mini && "pb-20 h-[520px] text-primary/80"
+              mini &&
+                "pb-20 h-[520px] text-primary/80 scale-90"
             )}
             ref={divRef}
           >

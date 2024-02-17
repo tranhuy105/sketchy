@@ -7,13 +7,16 @@ export default async function DashboardPage({
   searchParams,
 }: {
   searchParams?: {
-    [search: string]: string | string[] | undefined;
+    [search: string]: string | undefined;
   };
 }) {
   if (searchParams?.search) {
     console.log(searchParams);
   }
-  const boards = await getBoards();
+  const boards = await getBoards(
+    undefined,
+    searchParams?.search
+  );
 
   if (!boards) return null;
 

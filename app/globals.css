@@ -10,6 +10,9 @@ html, body, :root {
   
 
   :root {
+    --line-col: rgb(65, 65, 65);
+    --row-bg: #96d4d466;
+
     --background: 0 0% 100%;
     --foreground: 240 10% 3.9%;
 
@@ -100,8 +103,14 @@ html, body, :root {
   .intro {
     animation: fade-up 2s;
   }
-  
-  
+
+tr{
+  outline: 1px solid var(--line-col);
+}
+
+td:not(:last-child), th:not(:last-child){
+  border-right: solid 1px var(--line-col);
+}
 }
 
 

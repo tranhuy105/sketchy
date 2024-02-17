@@ -30,7 +30,7 @@ export const SearchInput = () => {
       { skipEmptyString: true, skipNull: true }
     );
 
-    if (debouncedValue.length < 3) return;
+    // if (debouncedValue.length < 3) return;
 
     if (url !== "/") {
       router.push(url);
