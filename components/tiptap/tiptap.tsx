@@ -3,6 +3,9 @@
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import TextAlign from "@tiptap/extension-text-align";
+import Color from "@tiptap/extension-color";
+import Highlight from "@tiptap/extension-highlight";
+
 import { Toolbar } from "./toolbar";
 import Image from "@tiptap/extension-image";
 
@@ -50,6 +53,14 @@ const Tiptap = ({
             "max-w-[calc(100vh*4/5)] max-h-[360px] mx-auto object-cover",
         },
       }),
+      Color,
+      Highlight.configure({
+        multicolor: true,
+        HTMLAttributes: {
+          class:
+            "px-2 py-1 rounded-md font-semibold text-slate-50",
+        },
+      }),
     ],
 
     editorProps: {
@@ -65,7 +76,7 @@ const Tiptap = ({
   });
 
   return (
-    <div className="justify-between flex items-center w-full relative">
+    <div className="justify-between flex items-center w-full relative ">
       <div className="w-full">
         <EditorContent editor={editor} />
       </div>

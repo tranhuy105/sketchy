@@ -279,16 +279,18 @@ export const BotCsvEditor = ({
       </div>
       {error && (
         <div className="pb-24 ">
-          <div className="w-fit mx-auto px-4 py-3 bg-red-500 text-slate-100 font-semibold rounded-xl drop-shadow-lg intro flex items-center gap-5 text-sm mt-12 ">
+          <div className="w-fit mx-auto px-4 py-3 bg-red-500 text-slate-100/80 font-semibold rounded-xl drop-shadow-lg intro flex items-center gap-5 text-sm mt-12 ">
             <p>
-              Invalid Type Error <br />
+              <span className="block mb-6 text-4xl text-white">
+                Invalid Type Error <br />
+              </span>
               Please make sure your csv&apos;s{" "}
-              <span className="font-bold text-white underline decoration-sky-500 underline-offset-2">
+              <span className="font-bold text-white ">
                 question and answer column field is not an
                 empty string
               </span>{" "}
-              <br /> Also{" "}
-              <span className="font-bold text-white underline decoration-sky-500 underline-offset-2">
+              <br className="" /> Also{" "}
+              <span className="font-bold text-white ">
                 images must be a valid URL
               </span>
             </p>

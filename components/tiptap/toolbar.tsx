@@ -145,6 +145,65 @@ export function Toolbar({ editor }: Props) {
       >
         <Undo className="h-4 w-4" />
       </Toggle>
+
+      {/* COLOR */}
+      <Toggle
+        className="border-none hover:bg-green-500 bg-[#8ce99a] data-[state=on]:bg-green-500 opacity-30 hover:opacity-100 data-[state=on]:opacity-100 transition-all"
+        variant={"default"}
+        onClick={() =>
+          editor
+            .chain()
+            .focus()
+            .toggleHighlight({ color: "#8ce99a" })
+            .run()
+        }
+        pressed={editor.isActive("highlight", {
+          color: "#8ce99a",
+        })}
+      >
+        <Undo
+          className="h-4 w-4 opacity-0
+       "
+        />
+      </Toggle>
+      <Toggle
+        className="border-none hover:bg-red-600 bg-red-500 data-[state=on]:bg-red-600 opacity-30 hover:opacity-100 data-[state=on]:opacity-100 transition-all"
+        variant={"outline"}
+        onClick={() =>
+          editor
+            .chain()
+            .focus()
+            .toggleHighlight({ color: "red" })
+            .run()
+        }
+        pressed={editor.isActive("highlight", {
+          color: "red",
+        })}
+      >
+        <Undo
+          className="h-4 w-4 opacity-0
+       "
+        />
+      </Toggle>
+      <Toggle
+        className="border-none hover:bg-orange-600 bg-orange-500 data-[state=on]:bg-orange-600 opacity-30 hover:opacity-100 data-[state=on]:opacity-100 transition-all"
+        variant={"outline"}
+        onClick={() =>
+          editor
+            .chain()
+            .focus()
+            .toggleHighlight({ color: "orange" })
+            .run()
+        }
+        pressed={editor.isActive("highlight", {
+          color: "orange",
+        })}
+      >
+        <Undo
+          className="h-4 w-4 opacity-0
+       "
+        />
+      </Toggle>
     </div>
   );
 }
