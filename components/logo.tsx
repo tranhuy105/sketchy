@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { Poppins } from "next/font/google";
 import { cn } from "@/lib/utils";
 import { Book } from "lucide-react";
+import { revalidatePath } from "next/cache";
 
 const font = Poppins({
   weight: ["400"],

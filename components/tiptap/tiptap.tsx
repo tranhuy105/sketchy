@@ -57,8 +57,7 @@ const Tiptap = ({
       Highlight.configure({
         multicolor: true,
         HTMLAttributes: {
-          class:
-            "px-2 py-1 rounded-md font-semibold text-slate-50",
+          class: "px-2 py-1 rounded-md font-semibold",
         },
       }),
     ],

@@ -2,6 +2,7 @@ import { getBoardFromId } from "@/actions/getBoardFromId";
 import { BotCsvEditor } from "@/components/bot/bot-csv-editor";
 import { FormComponents } from "@/components/form";
 import { FormCanvasComponents } from "@/components/form-canvas";
+import Loading from "./loading";
 
 export default async function page({
   params,
@@ -15,7 +16,7 @@ export default async function page({
 
   const board = await getBoardFromId(BoardId);
 
-  // console.log(board);
+  // return <Loading />;
 
   if (!board)
     return (
@@ -46,12 +47,15 @@ export default async function page({
       </div>
     );
   } else if (board.type === "BOT") {
-    return <div className="flex items-center justify-center h-[calc(100vh-64px)]">
-      <BotCsvEditor boardId={board.id}
+    return (
+      <div className="flex items-center justify-center h-[calc(100vh-64px)]">
+        <BotCsvEditor
+          boardId={board.id}
           title={board.title}
           content={board.content}
-           image={board.img}
-          />
-    </div>
+          image={board.img}
+        />
+      </div>
+    );
   }
 }

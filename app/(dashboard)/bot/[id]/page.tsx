@@ -1,6 +1,8 @@
 import { getBoards } from "@/actions/getAllBoards";
 import { getBoardFromId } from "@/actions/getBoardFromId";
 import { BotForm } from "@/components/bot/bot-form";
+import { Suspense } from "react";
+import Loading from "../../edit/[id]/loading";
 
 const page = async ({
   params,
@@ -25,7 +27,9 @@ const page = async ({
     );
 
   return (
-    <BotForm board={board} allBotBoards={allBotBoards} />
+    <Suspense fallback={<Loading />}>
+      <BotForm board={board} allBotBoards={allBotBoards} />
+    </Suspense>
   );
 };
 

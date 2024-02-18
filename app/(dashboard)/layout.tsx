@@ -1,5 +1,6 @@
 import { Navbar } from "@/components/navbar";
-
+import Loading from "../../components/loading";
+import { Suspense } from "react";
 const DashboarLayout = ({
   children,
 }: {
@@ -8,7 +9,11 @@ const DashboarLayout = ({
   return (
     <div className="h-[100%-64px] relative">
       <Navbar />
-      <div className="h-full">{children}</div>
+      {/* <Loading /> */}
+
+      <Suspense fallback={<Loading />}>
+        <div className="h-full">{children}</div>
+      </Suspense>
     </div>
   );
 };

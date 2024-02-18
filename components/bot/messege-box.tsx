@@ -57,7 +57,7 @@ export const MessageBox = ({ content }: MessageProps) => {
           behavior: "smooth",
           block: "end",
         });
-      }, 100);
+      }, 150);
     }
   }, [messages.length]);
 
