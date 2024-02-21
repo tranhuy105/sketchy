@@ -1,9 +1,8 @@
-"use client";
-
 import { useRouter } from "next/navigation";
 import { Poppins } from "next/font/google";
 import { cn } from "@/lib/utils";
 import { Book } from "lucide-react";
+import Link from "next/link";
 
 const font = Poppins({
   weight: ["400"],
@@ -11,16 +10,9 @@ const font = Poppins({
 });
 
 export const Logo = () => {
-  const router = useRouter();
-
-  const backToHomePage = () => {
-    router.push("/");
-    router.refresh();
-  };
-
   return (
-    <div
-      onClick={backToHomePage}
+    <Link
+      href={"/"}
       className="flex items-center gap-2 cursor-pointer"
     >
       <div className="bg-sky-500 p-2 rounded-full">
@@ -34,6 +26,6 @@ export const Logo = () => {
       >
         Sketchy
       </p>
-    </div>
+    </Link>
   );
 };

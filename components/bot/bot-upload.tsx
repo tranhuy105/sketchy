@@ -3,7 +3,11 @@
 import Image from "next/image";
 import Papa from "papaparse";
 import { useState, ChangeEvent } from "react";
-import { ArrowBigRightDash, Upload } from "lucide-react";
+import {
+  ArrowBigRightDash,
+  Loader2,
+  Upload,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 import { saveOrCreateNewBoard } from "@/actions/saveOrCreateNewBoard";
 import { Button } from "../ui/button";
@@ -12,6 +16,7 @@ export type CSVDataItem = string[];
 export const Bot = () => {
   const router = useRouter();
   const [error, setError] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   function isValidData(data: any): data is string[][] {
     return (
@@ -37,12 +42,20 @@ export const Bot = () => {
   };
 
   const handleCreateBot = async () => {
-    const board = await saveOrCreateNewBoard(
-      "New Bot",
-      "BOT",
-      `[["q1","","a1"]]`
-    );
-    router.push(`/edit/${board.id}`);
+    try {
+      setIsLoading(true);
+      const board = await saveOrCreateNewBoard(
+        "New Bot",
+        "BOT",
+        `[["q1","","a1"]]`
+      );
+      router.push(`/edit/${board.id}`);
+    } catch (err) {
+      console.error(err);
+      return null;
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleUpload = (
@@ -57,6 +70,7 @@ export const Bot = () => {
           const trimmedData = res.data.slice(0, -1);
 
           try {
+            setIsLoading(true);
             if (isValidData(trimmedData)) {
               const board = await saveOrCreateNewBoard(
                 "My bot",
@@ -71,6 +85,8 @@ export const Bot = () => {
           } catch (error) {
             setError(true);
             console.error("Error uploading file:", error);
+          } finally {
+            setIsLoading(false);
           }
         },
       });
@@ -176,6 +192,11 @@ export const Bot = () => {
           </div>
         )}
       </div>
+      {isLoading && (
+        <div className="fixed top-0 right-0 bottom-0 left-0 w-full h-full bg-secondary/50 flex items-center justify-center z-[9999]">
+          <Loader2 className="h-12 w-12 text-primary/50 animate-spin" />
+        </div>
+      )}
     </>
   );
 };

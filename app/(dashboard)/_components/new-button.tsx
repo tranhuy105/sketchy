@@ -43,15 +43,20 @@ export const NewButton = ({
       return;
     }
 
-    setIsLoading(true);
-    const newBoard = await saveOrCreateNewBoard(
-      "Your Title",
-      mode,
-      ""
-    );
-    setIsLoading(false);
-    router.push(`/edit/${newBoard.id}`);
-    // console.log(newBoard.id);
+    try {
+      setIsLoading(true);
+      const newBoard = await saveOrCreateNewBoard(
+        "Your Title",
+        mode,
+        ""
+      );
+      router.push(`/edit/${newBoard.id}`);
+    } catch (err) {
+      console.error(err);
+      return null;
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
