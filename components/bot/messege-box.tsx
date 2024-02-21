@@ -57,11 +57,9 @@ export const MessageBox = ({ content }: MessageProps) => {
           behavior: "smooth",
           block: "end",
         });
-      }, 150);
+      }, 200);
     }
   }, [messages.length]);
-
-  // console.log(data);
 
   // ADD MESSAGE LOGIC
   const addMessege = async (

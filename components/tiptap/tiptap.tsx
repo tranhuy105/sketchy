@@ -5,6 +5,7 @@ import StarterKit from "@tiptap/starter-kit";
 import TextAlign from "@tiptap/extension-text-align";
 import Color from "@tiptap/extension-color";
 import Highlight from "@tiptap/extension-highlight";
+import Blockquote from "@tiptap/extension-blockquote";
 
 import { Toolbar } from "./toolbar";
 import Image from "@tiptap/extension-image";
@@ -54,6 +55,11 @@ const Tiptap = ({
         },
       }),
       Color,
+      Blockquote.configure({
+        HTMLAttributes: {
+          class: "ml-8 border-l-2 border-l pl-8",
+        },
+      }),
       Highlight.configure({
         multicolor: true,
         HTMLAttributes: {
@@ -65,7 +71,7 @@ const Tiptap = ({
     editorProps: {
       attributes: {
         class:
-          "min-h-[500px] rounded-md caret-pink-700 font-medium focus:border focus:border-primary/20 focus:outline-none pr-4 py-3 text-base border-none space-y-2 mt-16",
+          "min-h-[500px] rounded-md caret-pink-700 font-medium focus:border focus:border-primary/20 focus:outline-none pr-4 py-3 text-lg border-none space-y-2 mt-16",
       },
     },
     onUpdate({ editor }) {

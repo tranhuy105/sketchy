@@ -31,7 +31,7 @@ export const Message = ({
       ? "bg-blue-500"
       : "bg-zinc-800 text-secondary",
     img !== "" && img !== "skip"
-      ? "w-[calc(100vw*1/2)] xl:w-[calc(100vw*1/4)]  relative rounded-lg p-0 border shadow-md"
+      ? "w-[calc(100vw*2/5)]  relative rounded-lg p-0 border shadow-md"
       : ""
   );
 
@@ -95,7 +95,7 @@ export const Message = ({
             <img
               src={img}
               alt={""}
-              className="object-fit"
+              className="object-fit object-center w-full h-full"
             />
           ) : (
             // mess

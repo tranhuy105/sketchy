@@ -9,6 +9,7 @@ import {
   Download,
   Plus,
   Trash,
+  Upload,
 } from "lucide-react";
 import {
   AlertDialog,
@@ -34,6 +35,21 @@ interface BotCsvEditorProps {
 function isUrl(value: string) {
   const urlRegex = /^(ftp|http|https):\/\/[^ "]+$/;
   return urlRegex.test(value) || value === "";
+}
+
+function isValidUrlArrayString(str: string) {
+  try {
+    const parsedArray = JSON.parse(str);
+    if (Array.isArray(parsedArray)) {
+      return parsedArray.every(
+        (item) => typeof item === "string"
+      );
+    }
+  } catch (error) {
+    return false;
+  }
+
+  return false;
 }
 
 function isValidData(data: any): data is string[][] {
@@ -113,12 +129,6 @@ export const BotCsvEditor = ({
     )
       return;
     setSelectedCell({ row, col });
-    // console.log(
-    //   "Selected Cell:",
-    //   { row, col },
-    //   "Selected Data:",
-    //   vals[row][col]
-    // );
   };
 
   const handleAddRow = () => {
@@ -129,6 +139,21 @@ export const BotCsvEditor = ({
     setVals((prevVals) =>
       prevVals.filter((_, i) => i !== index)
     );
+  };
+
+  const handleUrlStringsPrompt = () => {
+    const arrayOfUrls = window.prompt(
+      "Enter your array of urls:"
+    );
+    if (arrayOfUrls && isValidUrlArrayString(arrayOfUrls)) {
+      const parsedArray = JSON.parse(arrayOfUrls);
+      const mappedArray = parsedArray.map((url: string) => [
+        "",
+        url,
+        "",
+      ]);
+      setVals((prev) => [...prev, ...mappedArray]);
+    }
   };
 
   const handleChangeInput = (
@@ -182,10 +207,23 @@ export const BotCsvEditor = ({
                 <th
                   key={i}
                   className={cn(
-                    i === 0 ? "w-12" : "w-[30%]"
+                    i === 0 ? "w-12" : "w-[30%]",
+                    i === 2 &&
+                      "flex w-full gap-6 items-center justify-center"
                   )}
                 >
                   {col}
+                  {i === 2 && (
+                    <div
+                      className={cn(
+                        "cursor-pointer px-1 py-1 rounded-lg opacity-50 hover:opacity-100 transition-all",
+                        isLoading && "pointer-events-none"
+                      )}
+                      onClick={handleUrlStringsPrompt}
+                    >
+                      <Upload className="w-4 h-4" />
+                    </div>
+                  )}
                 </th>
               ))}
           </tr>

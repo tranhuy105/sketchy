@@ -10,6 +10,7 @@ import {
   Dot,
   Heading,
   ImageIcon,
+  Indent,
   Italic,
   Strikethrough,
   Undo,
@@ -83,6 +84,17 @@ export function Toolbar({ editor }: Props) {
       </Toggle>
 
       <Toggle
+        variant={"outline"}
+        pressed={editor.isActive("blockquote")}
+        onPressedChange={() =>
+          editor.chain().focus().toggleBlockquote().run()
+        }
+        className="border-none hover:bg-transparent"
+      >
+        <Indent className="h-4 w-4" />
+      </Toggle>
+
+      <Toggle
         className="border-none hover:bg-transparent"
         variant={"outline"}
         pressed={editor.isActive("bulletList")}
@@ -148,7 +160,7 @@ export function Toolbar({ editor }: Props) {
 
       {/* COLOR */}
       <Toggle
-        className="border-none hover:bg-green-500 bg-[#8ce99a] data-[state=on]:bg-green-500 opacity-30 hover:opacity-100 data-[state=on]:opacity-100 transition-all"
+        className="border-none hover:bg-green-500 bg-[#8ce99a] data-[state=on]:bg-green-500/50 opacity-30 hover:opacity-100 data-[state=on]:opacity-100 transition-all"
         variant={"default"}
         onClick={() =>
           editor
@@ -167,7 +179,7 @@ export function Toolbar({ editor }: Props) {
         />
       </Toggle>
       <Toggle
-        className="border-none hover:bg-red-600 bg-red-500 data-[state=on]:bg-red-600 opacity-30 hover:opacity-100 data-[state=on]:opacity-100 transition-all"
+        className="border-none hover:bg-red-600 bg-red-500 data-[state=on]:bg-red-600/50 opacity-30 hover:opacity-100 data-[state=on]:opacity-100 transition-all"
         variant={"outline"}
         onClick={() =>
           editor
@@ -186,7 +198,7 @@ export function Toolbar({ editor }: Props) {
         />
       </Toggle>
       <Toggle
-        className="border-none hover:bg-orange-600 bg-orange-500 data-[state=on]:bg-orange-600 opacity-30 hover:opacity-100 data-[state=on]:opacity-100 transition-all"
+        className="border-none hover:bg-orange-600 bg-orange-500 data-[state=on]:bg-orange-600/50 opacity-30 hover:opacity-100 data-[state=on]:opacity-100 transition-all"
         variant={"outline"}
         onClick={() =>
           editor

@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Papa from "papaparse";
 import { useState, ChangeEvent } from "react";
-import { Upload } from "lucide-react";
+import { ArrowBigRightDash, Upload } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { saveOrCreateNewBoard } from "@/actions/saveOrCreateNewBoard";
 import { Button } from "../ui/button";
@@ -34,6 +34,15 @@ export const Bot = () => {
     const urlRegex = /^(ftp|http|https):\/\/[^ "]+$/;
 
     return urlRegex.test(value) || value === "";
+  };
+
+  const handleCreateBot = async () => {
+    const board = await saveOrCreateNewBoard(
+      "New Bot",
+      "BOT",
+      `[["q1","","a1"]]`
+    );
+    router.push(`/edit/${board.id}`);
   };
 
   const handleUpload = (
@@ -134,6 +143,15 @@ export const Bot = () => {
             className="opacity-0 absolute w-full h-full group-hover:cursor-pointer"
             onChange={handleUpload}
           />
+        </div>
+        <div
+          className="flex flex-col  items-center justify-center my-16 mt-8 px-6 py-3 rounded-2xl opacity-90 hover:opacity-100 transition-all duration-500 hover:scale-105 w-96 bg-transparent text-muted-foreground mx-auto relative group cursor-pointer"
+          onClick={handleCreateBot}
+        >
+          <p>Or start right away with an empty table</p>
+          <div className="">
+            <ArrowBigRightDash className="h-8 w-12" />
+          </div>
         </div>
         {error && (
           <div className="w-fit mx-auto px-4 py-3 bg-red-500 text-slate-100 font-semibold rounded-xl drop-shadow-lg intro flex items-center gap-5 text-sm -mt-6">
